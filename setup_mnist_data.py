@@ -12,6 +12,8 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 import numpy as np
 import csv
 
+from PIL import Image
+
 #### 
 
 ##### THIS SCRIPT IS TAKEN FROM HERE
@@ -21,7 +23,6 @@ IMAGE_SIZE = 28
 
 def extract_data(filename, num_images):
   """Extract the images into a 4D tensor [image index, y, x, channels].
-  Values are rescaled from [0, 255] down to [-0.5, 0.5].
   """
   print('Extracting', filename)
   with gzip.open(filename) as bytestream:
@@ -55,3 +56,10 @@ test_labels = extract_labels(test_labels_filename, 10000)
 print(train_data.shape)
 
 print(test_data.shape)
+
+
+image = train_data[0, :, :, 0]
+
+im = Image.fromarray(image)
+
+im.show()
