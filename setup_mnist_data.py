@@ -42,6 +42,7 @@ def extract_labels(filename, num_images):
     labels = np.frombuffer(buf, dtype=np.uint8).astype(np.int64)
   return labels
 
+#### Just plain example. Pls dont remove
 train_data_filename = 'data/train-images-idx3-ubyte.gz'
 train_labels_filename = 'data/train-labels-idx1-ubyte.gz'
 test_data_filename = 'data/t10k-images-idx3-ubyte.gz'
@@ -63,3 +64,39 @@ image = train_data[0, :, :, 0]
 im = Image.fromarray(image)
 
 im.show()
+
+
+## set up data that can be used in R and in matlab
+train_data_filename = 'data/train-images-idx3-ubyte.gz'
+train_labels_filename = 'data/train-labels-idx1-ubyte.gz'
+test_data_filename = 'data/t10k-images-idx3-ubyte.gz'
+test_labels_filename = 'data/t10k-labels-idx1-ubyte.gz'
+
+# Extract it into np arrays.
+tr_data = extract_data(train_data_filename, 60000)
+train_labels = extract_labels(train_labels_filename, 60000)
+te_data = extract_data(test_data_filename, 10000)
+test_labels = extract_labels(test_labels_filename, 10000)
+
+
+# In[2]:
+
+
+def flatten_data(data):
+    m = np.zeros((data.shape[0], data.shape[1] * data.shape[2]))
+    for e in range(data.shape[0]):
+        m[e, ] = np.ndarray.flatten(data[e, :, :, 0])
+    return m
+
+
+# In[3]:
+
+
+train_data = flatten_data(tr_data)
+test_data = flatten_data(te_data)
+
+
+np.savetxt('data/mnist/mnist_train_data.csv', train_data, delimiter = ',')
+np.savetxt('data/mnist/mnist_test_data.csv', test_data, delimiter = ',')
+np.savetxt('data/mnist/mnist_train_labels.csv', train_labels, delimiter = ',')
+np.savetxt('data/mnist/mnist_test_labels.csv', test_labels, delimiter = ',')

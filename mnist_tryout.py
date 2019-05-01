@@ -134,10 +134,10 @@ import pickle
 # In[8]:
 
 
-with open('data/results_pca_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/results_pca_10_comp.pickle', 'wb') as handle:
     pickle.dump(results_pca, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-with open('data/pca_parameters_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/pca_parameters_10_comp.pickle', 'wb') as handle:
     pickle.dump(pca_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
 
 
@@ -150,10 +150,10 @@ results_lda, lda_parameters = run_neighbor_classifier(10, train_data, test_data,
 # In[12]:
 
 
-with open('data/results_lda_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/results_lda_10_comp.pickle', 'wb') as handle:
     pickle.dump(results_lda, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-with open('data/lda_parameters_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/lda_parameters_10_comp.pickle', 'wb') as handle:
     pickle.dump(lda_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
 
 
@@ -162,7 +162,7 @@ with open('data/lda_parameters_10_comp.pickle', 'wb') as handle:
 
 # example pickle load
 
-with open('data/results_lda_10_comp.pickle', 'rb') as handle:
+with open('data/mnist/results_lda_10_comp.pickle', 'rb') as handle:
     results_lda_10_comp_reloaded = pickle.load(handle)
 
 
