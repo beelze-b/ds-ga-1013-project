@@ -39,7 +39,7 @@ run_self <- function(X, y, n_components, beta = 0.6) {
 
 
 ## 75% of the sample size
-smp_size <- floor(3200)
+smp_size <- floor(2000)
 
 ## set the seed to make your partition reproducible
 set.seed(123)
