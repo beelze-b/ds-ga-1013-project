@@ -26,6 +26,8 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 import scipy
 
+from sklearn.model_selection import train_test_split
+
 
 import pickle
 
@@ -100,6 +102,12 @@ def run_self(X, y, n_components, beta = 0.5):
 def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, test_labels, run = None, seed = 3429):
     np.random.seed(seed)
     start_time = time.time()
+    
+    ind, _, _, _ = train_test_split(np.arange(train_data.shape[0]), 
+                                    train_labels, 
+                                    test_size=train_data.shape[0]-100,
+                                    random_state=seed)
+    
     if run == "pca":
         pca_model = PCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
@@ -109,8 +117,9 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = lda_model.fit_transform(train_data, train_labels)
         test_x = lda_model.transform(test_data) 
     elif run== "lfda":
+        
         lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
-        train_x = lfda_model.fit_transform(train_data, train_labels)
+        train_x = lfda_model.fit_transform(train_data[ind, :], train_labels[ind])
         test_x = lfda_model.transform(test_data)  
     elif run == "kpca":
         pca_model = KernelPCA(n_components=ncomponents)
@@ -120,12 +129,12 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
         reduced_test = pca_model.transform(test_data)
-        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
+        lmnn_model = LMNN(k=1,use_pca=False).fit(train_data[ind, :], train_labels[ind])
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
         nca_model = NCA(num_dims = ncomponents)
-        train_x = nca_model.fit_transform(train_data, train_labels)
+        train_x = nca_model.fit_transform(train_data[ind, :], train_labels[ind])
         test_x = nca_model.transform(test_data)
     elif run == "umap":
         umap_model = UMAP(n_components=ncomponents)
@@ -139,8 +148,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = mmc_model.transform(reduced_train)
         test_x = mmc_model.transform(reduced_test)
     elif run == "self":
-        size = np.min([320, train_data.shape[0]])
-        ind = np.random.choice(train_data.shape[0], size = size, replace = False)
         results = run_self(train_data[ind, :], train_labels[ind], ncomponents)
         train_x = train_data.dot(results)
         test_x = test_data.dot(results)
