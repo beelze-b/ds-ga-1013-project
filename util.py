@@ -134,9 +134,9 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = mmc_model.fit_transform(train_data, train_labels)
         test_x = mmc_model.transform(test_data)
     elif run == "self":
-        size = np.min([1000, X.shape[0]])
+        size = np.min([1000, train_data.shape[0]])
         ind = np.random.choice(train_data.shape[0], size = size, replace = False)
-        results = run_self(train_data[ind, :], train_labels[ind], n_components)
+        results = run_self(train_data[ind, :], train_labels[ind], ncomponents)
         train_x = train_data.dot(results)
         test_x = test_data.dot(results)
     else:
@@ -158,6 +158,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     train_accuracy = accuracy_score(train_labels, model.predict(train_x))
     
     test_accuracy = accuracy_score(test_labels, model.predict(test_x))
-    return {'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy, 'run_time': time_diff, 'n_comp': n_components, 'n_neighbors': parameters['n_neighbors']}
+    return {'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy, 'run_time': time_diff, 'n_comp': ncomponents, 'n_neighbors': parameters['n_neighbors']}
 
 
