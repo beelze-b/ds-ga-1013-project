@@ -99,7 +99,7 @@ def run_self(X, y, n_components, beta = 0.5):
     return T
 
 
-def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, test_labels, run = None, seed = 3429):
+def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, test_labels, run = None, seed = int(3429)):
     np.random.seed(seed)
     start_time = time.time()
     
@@ -117,7 +117,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = lda_model.fit_transform(train_data, train_labels)
         test_x = lda_model.transform(test_data) 
     elif run== "lfda":
-        
         lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
         train_x = lfda_model.fit_transform(train_data[ind, :], train_labels[ind])
         test_x = lfda_model.transform(test_data)  
