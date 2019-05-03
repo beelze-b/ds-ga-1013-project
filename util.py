@@ -1,8 +1,26 @@
 from sklearn.decomposition import PCA
-from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+import sklearn
+from sklearn import datasets
+from sklearn import decomposition
+import matplotlib.pyplot as plt
+from time import time
+import numpy as np
+from sklearn.decomposition import KernelPCA
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import hinge_loss
+from sklearn.metrics import make_scorer
+from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import average_precision_score
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from metric_learn.lfda import LFDA
+from metric_learn.lmnn import LMNN
+from metric_learn.nca import NCA
+from metric_learn.mmc import MMC
+from metric_learn import MMC_Supervised
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
@@ -24,7 +42,9 @@ def closest_k_neighbor(x, X, K = 7 ):
 
 def run_self(X, y, n_components, beta = 0.5):    
     mask = np.zeros(X.shape[0])
-    take_these_label_indices = np.random.choice(X.shape[0], size= 10, replace = False)
+    size = np.floor(np.min([X.shape[0] * .1, 200]))
+
+    take_these_label_indices = np.random.choice(X.shape[0], size=int(size), replace = False)
     mask[take_these_label_indices] = 1
     X_labeled = X[mask.astype(bool), :]
     y_labeled = y[mask.astype(bool)]
@@ -75,5 +95,69 @@ def run_self(X, y, n_components, beta = 0.5):
     
     return T
 
+def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, test_labels, run = None, seed = 3429):
+    start_time = time.time()
+    if run == "pca":
+        pca_model = PCA(n_components=ncomponents)
+        train_x = pca_model.fit_transform(train_data)
+        test_x = pca_model.transform(test_data)
+    elif run == "lda":
+        lda_model = LinearDiscriminantAnalysis(n_components = ncomponents)
+        train_x = lda_model.fit_transform(train_data, train_labels)
+        test_x = lda_model.transform(test_data) 
+    elif run== "lfda":
+        lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
+        train_x = lfda_model.fit_transform(train_data, train_labels)
+        test_x = lfda_model.transform(test_data)  
+    elif run == "kpca":
+        pca_model = KernelPCA(n_components=ncomponents)
+        train_x = pca_model.fit_transform(train_data)
+        test_x = pca_model.transform(test_data)
+    elif run== "lmnn":
+        pca_model = PCA(n_components=ncomponents)
+        reduced_train = pca_model.fit_transform(train_data)
+        reduced_test = pca_model.transform(test_data)
+        sample = np.random.choice(range(reduced_train.shape[0]), size=320, replace=False)
+        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train[sample], train_labels[sample])
+        train_x = lmnn_model.transform(reduced_train)
+        test_x = lmnn_model.transform(reduced_test)
+    elif run == "nca":
+        nca_model = NCA(num_dims = ncomponents)
+        train_x = nca_model.fit_transform(train_data, train_labels)
+        test_x = nca_model.transform(test_data)
+    elif run == "umap":
+        umap_model = UMAP(n_components=ncomponents)
+        train_x = umap_model.fit_transform(train_data)
+        test_x = umap_model.transform(test_data)
+    elif run == "mmc":
+        mmc_model =  MMC_Supervised()
+        train_x = mmc_model.fit_transform(train_data, train_labels)
+        test_x = mmc_model.transform(test_data)
+    elif run == "self":
+        size = np.min([1000, X.shape[0]])
+        ind = np.random.choice(train_data.shape[0], size = size, replace = False)
+        results = run_self(train_data[ind, :], train_labels[ind], n_components)
+        train_x = train_data.dot(results)
+        test_x = test_data.dot(results)
+    else:
+        train_x = train_data
+        test_x = test_data
+
+    end_time time.time()
+
+    time_diff = end_time - start_time
+    
+    classifier = KNeighborsClassifier()
+    
+    param_grid = {"n_neighbors" : [1, 3, 5, 7, 11]}
+    neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5, scoring=make_scorer(matthews_corrcoef))
+    neighbor_grid.fit(train_x, train_labels)
+    
+    model = neighbor_grid.best_estimator_
+    parameters = neighbor_grid.best_params_
+    train_accuracy = accuracy_score(train_labels, model.predict(train_x))
+    
+    test_accuracy = accuracy_score(test_labels, model.predict(test_x))
+    return {'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy, 'run_time': time_diff, 'n_comp': n_components, 'n_neighbors': parameters['n_neighbors']}
 
 
