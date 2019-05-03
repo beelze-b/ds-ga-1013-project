@@ -143,7 +143,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = train_data
         test_x = test_data
 
-    end_time time.time()
+    end_time = time.time()
 
     time_diff = end_time - start_time
     
