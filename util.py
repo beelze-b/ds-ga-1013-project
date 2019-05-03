@@ -117,8 +117,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
         reduced_test = pca_model.transform(test_data)
-        sample = np.random.choice(range(reduced_train.shape[0]), size=320, replace=False)
-        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train[sample], train_labels[sample])
+        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
@@ -130,9 +129,12 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = umap_model.fit_transform(train_data)
         test_x = umap_model.transform(test_data)
     elif run == "mmc":
-        mmc_model =  MMC_Supervised()
-        train_x = mmc_model.fit_transform(train_data, train_labels)
-        test_x = mmc_model.transform(test_data)
+        pca_model = PCA(n_components=ncomponents)
+        reduced_train = pca_model.fit_transform(train_data)
+        reduced_test = pca_model.transform(test_data)
+        mmc_model =  MMC_Supervised(num_constraints=200).fit(reduced_train, train_labels)
+        train_x = mmc_model.transform(reduced_train)
+        test_x = mmc_model.transform(reduced_test)
     elif run == "self":
         size = np.min([1000, train_data.shape[0]])
         ind = np.random.choice(train_data.shape[0], size = size, replace = False)
