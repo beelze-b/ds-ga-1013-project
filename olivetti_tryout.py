@@ -52,9 +52,13 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = pca_model.fit_transform(train_data)
         test_x = pca_model.transform(test_data)
     elif run== "lmnn":
-        lmnn_model = LMNN()
-        train_x = lmnn_model.fit_transform(train_data, train_labels)
-        test_x = lmnn_model.transform(test_data)
+        pca_model = PCA(n_components=ncomponents)
+        reduced_train = pca_model.fit_transform(train_data)
+        reduced_test = pca_model.transform(test_data)
+        sample = np.random.choice(range(reduced_train.shape[0]), size=320, replace=False)
+        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train[sample], train_labels[sample])
+        train_x = lmnn_model.transform(reduced_train)
+        test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
         nca_model = NCA(num_dims = ncomponents)
         train_x = nca_model.fit_transform(train_data, train_labels)
@@ -74,7 +78,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     classifier = KNeighborsClassifier()
     
     param_grid = {"n_neighbors" : [1, 3, 5, 7, 11]}
-    #neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5)
     neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5, scoring=make_scorer(matthews_corrcoef))
     neighbor_grid.fit(train_x, train_labels)
     
@@ -113,12 +116,12 @@ for j in [1,10,20,40,50,75,100,1000,2000]:
     
 kpca_dim
 
-#lmnn_dim = []
-#for j in [2]:
-#    results_lmnn, lmnn_parameters = run_neighbor_classifier(j, X_train, X_val, y_train, y_val, run = "lmnn")
-#    lmnn_dim.append(('dim = '+str(j),results_lmnn, lmnn_parameters))
+lmnn_dim = []
+for j in [4096]:
+    results_lmnn, lmnn_parameters = run_neighbor_classifier(j, X_train, X_val, y_train, y_val, run = "lmnn")
+    lmnn_dim.append(('dim = '+str(j),results_lmnn, lmnn_parameters))
 
-#lmnn_dim 
+lmnn_dim
 
 nca_dim = []
 for j in [1,10,20,40,50,75,100,1000,2000]:
