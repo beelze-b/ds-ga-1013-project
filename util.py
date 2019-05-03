@@ -55,8 +55,6 @@ def run_self(X, y, n_components, beta = 0.5):
     n_labeled = X_labeled.shape[0]
     n_all = X.shape[0]
 
-    if beta == 0:
-        assert n_labeled >= d
     
     a_matrix = np.zeros((n_labeled, n_labeled))
     w_lb = np.zeros((n_labeled, n_labeled))
