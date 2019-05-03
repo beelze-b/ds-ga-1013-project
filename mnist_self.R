@@ -47,7 +47,7 @@ self.indices <- sample(seq_len(nrow(train_data)), size = smp_size)
 
 
 
-self.model <- run_self(mv$train[self.indices, ], train_labels[self.indices], n_components = 10, beta = 0.9)
+self.model <- run_self(mv$train[self.indices, ], train_labels[self.indices], n_components = 10, beta = 0.99)
 reduced_train <- as.data.frame(mv$train %*% self.model$T)
 reduced_test <- as.data.frame(mv$test %*% self.model$T)
 
@@ -62,3 +62,4 @@ knn_fit <- train(x = reduced_train, y = as.factor(train_labels), method = "knn",
 
 
 predictions <- predict(knn_fit, reduced_test)
+sum(predictions == test_labels)

@@ -76,6 +76,15 @@ def flatten_data(data):
 train_data = flatten_data(tr_data)
 test_data = flatten_data(te_data)
 
+columns_to_use = np.apply_along_axis(lambda x: ~np.all(np.isclose(x, 0)), 0, train_data)
+
+train_data = train_data[:, columns_to_use]
+test_data = test_data[:, columns_to_use]
+
+
+train_data_mean = train_data.mean(axis=0).reshape(1, -1)
+train_data = train_data - train_data_mean
+test_data = test_data - train_data_mean
 
 # In[4]:
 
