@@ -33,7 +33,7 @@ import pickle
 def closest_k_neighbor(x, X, K = 7 ):
     assert K != 1
     assert x.shape[0] == X.shape[1]
-    assert K <= X.shape[1]
+    assert K <= X.shape[0]
     distances = np.apply_along_axis(lambda y: np.sum( (x-y)**2), 1, X)
     distance_arg_sorted = np.argsort(-distances)
     index_of_k_closest = distance_arg_sorted[K-1]
