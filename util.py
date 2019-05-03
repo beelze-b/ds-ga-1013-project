@@ -40,8 +40,9 @@ def closest_k_neighbor(x, X, K = 7 ):
     return X[index_of_k_closest, :]
 
 def run_self(X, y, n_components, beta = 0.5):    
+    assert X.shape[0] >= 50
     mask = np.zeros(X.shape[0])
-    take_these_label_indices = np.random.choice(X.shape[0], size= 100, replace = False)
+    take_these_label_indices = np.random.choice(X.shape[0], size= 50, replace = False)
     mask[take_these_label_indices] = 1
     X_labeled = X[mask.astype(bool), :]
     y_labeled = y[mask.astype(bool)]
@@ -137,7 +138,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = mmc_model.transform(reduced_train)
         test_x = mmc_model.transform(reduced_test)
     elif run == "self":
-        size = np.min([1000, train_data.shape[0]])
+        size = np.min([320, train_data.shape[0]])
         ind = np.random.choice(train_data.shape[0], size = size, replace = False)
         results = run_self(train_data[ind, :], train_labels[ind], ncomponents)
         train_x = train_data.dot(results)
