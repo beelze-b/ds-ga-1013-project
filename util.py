@@ -54,6 +54,9 @@ def run_self(X, y, n_components, beta = 0.5):
     
     n_labeled = X_labeled.shape[0]
     n_all = X.shape[0]
+
+    if beta == 0:
+        assert n_labeled >= d
     
     a_matrix = np.zeros((n_labeled, n_labeled))
     w_lb = np.zeros((n_labeled, n_labeled))
@@ -74,8 +77,8 @@ def run_self(X, y, n_components, beta = 0.5):
 
     Xprime = np.transpose(X_labeled)
     mu = X_all.mean(axis = 0)
-    S_lb = (Xprime.dot(np.diag(w_lb.mean(axis = 0)) - w_lb)).dot(X_labeled)      
-    S_lw = (Xprime.dot(np.diag(w_lw.mean(axis = 0)) - w_lw)).dot(X_labeled)  
+    S_lb = (Xprime.dot(np.diag(w_lb.sum(axis = 0)) - w_lb)).dot(X_labeled)      
+    S_lw = (Xprime.dot(np.diag(w_lw.sum(axis = 0)) - w_lw)).dot(X_labeled)  
 
 
     S_t = np.transpose(X_all).dot(X_all) - n_all * mu.reshape(-1, 1).dot(mu.reshape(1, -1))
