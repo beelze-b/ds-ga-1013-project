@@ -6,7 +6,7 @@ import sklearn
 from sklearn import datasets
 from sklearn import decomposition
 import matplotlib.pyplot as plt
-from time import time
+import time
 import numpy as np
 from sklearn.decomposition import KernelPCA
 from sklearn.model_selection import GridSearchCV
