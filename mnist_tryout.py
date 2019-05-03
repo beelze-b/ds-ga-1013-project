@@ -107,7 +107,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     
     classifier = KNeighborsClassifier()
     
-    param_grid = {"n_neighbors" : [3, 5, 8, 10, 15]}
+    param_grid = {"n_neighbors" : [1, 3, 5, 7, 11]}
     neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5)
     neighbor_grid.fit(train_x, train_labels)
     
@@ -122,7 +122,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
 # In[6]:
 
 
-results_pca, pca_parameters = run_neighbor_classifier(10, train_data, test_data, train_labels, test_labels, run = "pca")
+results_pca, pca_parameters = run_neighbor_classifier(3, train_data, test_data, train_labels, test_labels, run = "pca")
 
 
 # In[7]:
@@ -134,10 +134,10 @@ import pickle
 # In[8]:
 
 
-with open('data/mnist/results_pca_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/results_pca_3_comp.pickle', 'wb') as handle:
     pickle.dump(results_pca, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-with open('data/mnist/pca_parameters_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/pca_parameters_3_comp.pickle', 'wb') as handle:
     pickle.dump(pca_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
 
 
@@ -150,10 +150,10 @@ results_lda, lda_parameters = run_neighbor_classifier(10, train_data, test_data,
 # In[12]:
 
 
-with open('data/mnist/results_lda_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/results_lda_3_comp.pickle', 'wb') as handle:
     pickle.dump(results_lda, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-with open('data/mnist/lda_parameters_10_comp.pickle', 'wb') as handle:
+with open('data/mnist/lda_parameters_3_comp.pickle', 'wb') as handle:
     pickle.dump(lda_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
 
 
@@ -162,7 +162,7 @@ with open('data/mnist/lda_parameters_10_comp.pickle', 'wb') as handle:
 
 # example pickle load
 
-with open('data/mnist/results_lda_10_comp.pickle', 'rb') as handle:
+with open('data/mnist/results_lda_3_comp.pickle', 'rb') as handle:
     results_lda_10_comp_reloaded = pickle.load(handle)
 
 
