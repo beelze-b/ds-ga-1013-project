@@ -41,7 +41,7 @@ def closest_k_neighbor(x, X, K = 7 ):
 
 def run_self(X, y, n_components, beta = 0.5):    
     mask = np.zeros(X.shape[0])
-    take_these_label_indices = np.random.choice(X.shape[0], size= 200, replace = False)
+    take_these_label_indices = np.random.choice(X.shape[0], size= 100, replace = False)
     mask[take_these_label_indices] = 1
     X_labeled = X[mask.astype(bool), :]
     y_labeled = y[mask.astype(bool)]
