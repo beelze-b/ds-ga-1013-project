@@ -147,6 +147,10 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = mmc_model.transform(reduced_train)
         test_x = mmc_model.transform(reduced_test)
     elif run == "self":
+        if (train_data.shape[1] >= 800): 
+            pca_model = PCA(n_components=800)
+            train_data = pca_model.fit_transform(train_data)
+            test_data = pca_model.transform(test_data)
         results = run_self(train_data[ind, :], train_labels[ind], ncomponents)
         train_x = train_data.dot(results)
         test_x = test_data.dot(results)
@@ -158,9 +162,10 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
 
     time_diff = end_time - start_time
     
+    
     classifier = KNeighborsClassifier()
     
-    param_grid = {"n_neighbors" : [1, 3, 5, 7, 11]}
+    param_grid = {"n_neighbors" : [1, 3, 5]}
     neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5, scoring=make_scorer(matthews_corrcoef))
     neighbor_grid.fit(train_x, train_labels)
     
