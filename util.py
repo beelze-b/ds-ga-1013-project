@@ -90,9 +90,11 @@ def run_self(X, y, n_components, beta = 0.5):
 
     eig, vectors = scipy.linalg.eig(a = S_rlb, b = S_rlw)
     eig = np.real(eig)
+    eig_sort = np.argsort(-np.abs(eig))
+    eig_ind = eig_sort[:n_components]
     vectors = np.real(vectors)
-    eig = np.sqrt(eig[:n_components])
-    vectors = vectors[:, :n_components]
+    eig = np.sqrt(eig[eig_ind])
+    vectors = vectors[:, eig_ind]
     T = np.zeros((d, n_components))
     for i in range(n_components):
         T[:, i] = eig[i] * vectors[:, i]
