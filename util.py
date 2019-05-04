@@ -177,3 +177,20 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     return {'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy, 'run_time': time_diff, 'n_comp': ncomponents, 'n_neighbors': parameters['n_neighbors']}
 
 
+def run_algorithms_dataset(dataset_name, 
+                           train_data, 
+                           test_data, 
+                           train_labels, 
+                           test_labels, 
+                           n_component_list=[2, 5, 10, 20, 40]):
+    algorithms = ['pca', 'lda', 'lfda', 'kpca', 'lmnn', 'nca', 'self']
+    
+    for n_components in n_component_list:
+        for algorithm in algorithms:
+            results = run_neighbor_classifier(n_components, train_data, test_data, \
+                                              train_labels, test_labels, run = algorithm)
+            with open('data/{0}/{1}_parameters_{2}_comp.pickle'.format(dataset_name, algorithm, n_components),\
+                      'wb') as handle:
+                pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)  
+    return
+
