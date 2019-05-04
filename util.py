@@ -25,6 +25,7 @@ from metric_learn import MMC_Supervised
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 import scipy
+from scipy import stats
 
 from sklearn.model_selection import train_test_split
 
@@ -185,8 +186,27 @@ def run_algorithms_dataset(dataset_name,
     for algorithm in algorithms:
         for n_components in n_component_list:
             print(algorithm)
-            results = run_neighbor_classifier(n_components, train_data, test_data, \
-                                              train_labels, test_labels, run = algorithm)
+            time_diff = []
+            train_accuracy = []
+            test_accuracy = []
+            neighbors = []
+
+            for i in range(5):
+                train_size = np.min([train_data.shape[0], 800])
+                test_size = np.min([test_size.shape[0], 200])
+                train_ind = np.random.choice(np.arange(train_data.shape[0]), size = train_size, replace = False)
+                test_ind = np.random.choice(np.arange(test_data.shape[0]), size = test_size, replace = False)
+
+                results = run_neighbor_classifier(n_components, train_data[train_ind, ], test_data[test_ind, ], \
+                                              train_labels[train_ind], test_labels[test_ind], run = algorithm)
+                time_diff.append(results['run_time'])
+                train_accuracy.append(results['train_accuracy'])
+                test_accuracy.append(results['test_accuracy'])
+                neighbors.append(results['n_neighbors'])
+
+            results = {'train_accuracy': np.mean(train_accuracy), 'test_accuracy': np.mean(test_accuracy), 'run_time': np.mean(time_diff), 'n_comp': n_components,
+                    'n_neighbors': stats.mode(neighbors).mode[0]}
+
             with open('data/{0}/{1}_parameters_{2}_comp.pickle'.format(dataset_name, algorithm, n_components),\
                       'wb') as handle:
                 pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)  
