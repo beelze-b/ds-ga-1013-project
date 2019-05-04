@@ -106,8 +106,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     ind, _, _, _ = train_test_split(np.arange(train_data.shape[0]), 
                                     train_labels, 
                                     test_size=train_data.shape[0]-100,
-                                    random_state=seed)
-    
+                                    random_state=seed)    
     if run == "pca":
         pca_model = PCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
@@ -116,11 +115,14 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         lda_model = LinearDiscriminantAnalysis(n_components = ncomponents)
         train_x = lda_model.fit_transform(train_data, train_labels)
         test_x = lda_model.transform(test_data) 
-    elif run== "lfda":
-        lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
-        lfda_model.fit(train_data[ind, :], train_labels[ind])
-        train_x = lfda_model.transform(train_data)
-        test_x = lfda_model.transform(test_data)  
+    elif run == "lfda":
+        try:
+            lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
+            lfda_model.fit(train_data[ind, :], train_labels[ind])
+            train_x = lfda_model.transform(train_data)
+            test_x = lfda_model.transform(test_data)
+        except ValueError as e:
+            return {'train_accuracy': -1, 'test_accuracy': -1, 'run_time': -1, 'n_comp': -1, 'n_neighbors': -1}
     elif run == "kpca":
         pca_model = KernelPCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
