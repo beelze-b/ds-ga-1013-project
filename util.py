@@ -118,7 +118,8 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         test_x = lda_model.transform(test_data) 
     elif run== "lfda":
         lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
-        train_x = lfda_model.fit_transform(train_data[ind, :], train_labels[ind])
+        lfda_model.fit(train_data[ind, :], train_labels[ind])
+        train_x = lfda_model.transform(train_data)
         test_x = lfda_model.transform(test_data)  
     elif run == "kpca":
         pca_model = KernelPCA(n_components=ncomponents)
@@ -133,12 +134,9 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
         nca_model = NCA(num_dims = ncomponents)
-        train_x = nca_model.fit_transform(train_data[ind, :], train_labels[ind])
+        nca_model.fit_transform(train_data[ind, :], train_labels[ind])
+        train_x = nca_model.transform(train_data)
         test_x = nca_model.transform(test_data)
-    elif run == "umap":
-        umap_model = UMAP(n_components=ncomponents)
-        train_x = umap_model.fit_transform(train_data)
-        test_x = umap_model.transform(test_data)
     elif run == "mmc":
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
@@ -185,8 +183,9 @@ def run_algorithms_dataset(dataset_name,
                            n_component_list=[2, 5, 10, 20, 40]):
     algorithms = ['pca', 'lda', 'lfda', 'kpca', 'lmnn', 'nca', 'self']
     
-    for n_components in n_component_list:
-        for algorithm in algorithms:
+    for algorithm in algorithms:
+        for n_components in n_component_list:
+            print(algorithm)
             results = run_neighbor_classifier(n_components, train_data, test_data, \
                                               train_labels, test_labels, run = algorithm)
             with open('data/{0}/{1}_parameters_{2}_comp.pickle'.format(dataset_name, algorithm, n_components),\
