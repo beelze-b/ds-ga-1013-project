@@ -240,7 +240,7 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
-        nca_model = NCA(num_dims = ncomponents)
+        nca_model = NCA(num_dims = ncomponents, max_iter=100000)
         nca_model.fit_transform(train_data, train_labels)
         train_x = nca_model.transform(train_data)
         test_x = nca_model.transform(test_data)
