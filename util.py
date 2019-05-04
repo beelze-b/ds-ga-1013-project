@@ -130,7 +130,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
         reduced_test = pca_model.transform(test_data)
-        lmnn_model = LMNN(k=1,use_pca=False).fit(train_data[ind, :], train_labels[ind])
+        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
