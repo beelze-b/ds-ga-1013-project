@@ -82,111 +82,18 @@ train_data = train_data[:, columns_to_use]
 test_data = test_data[:, columns_to_use]
 
 
-train_data_mean = train_data.mean(axis=0).reshape(1, -1)
-train_data = train_data - train_data_mean
-test_data = test_data - train_data_mean
 
-# In[4]:
+# In[ ]:
 
 
-from sklearn.decomposition import PCA
-from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
-
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
-
-# In[10]:
-
-
-def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, test_labels, run = None):
-    if run == "pca":
-        pca_model = PCA(n_components=ncomponents)
-        train_x = pca_model.fit_transform(train_data)
-        test_x = pca_model.transform(test_data)
-    elif run == "lda":
-        lda_model = LinearDiscriminantAnalysis(n_components = ncomponents)
-        train_x = lda_model.fit_transform(train_data, train_labels)
-        test_x = lda_model.transform(test_data)
-    else:
-        train_x = train_data
-        test_x = test_data
-    
-    classifier = KNeighborsClassifier()
-    
-    param_grid = {"n_neighbors" : [1, 3, 5, 7, 11]}
-    neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5)
-    neighbor_grid.fit(train_x, train_labels)
-    
-    model = neighbor_grid.best_estimator_
-    parameters = neighbor_grid.best_params_
-    train_accuracy = accuracy_score(train_labels, model.predict(train_x))
-    
-    test_accuracy = accuracy_score(test_labels, model.predict(test_x))
-    return {'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy}, parameters
-
-
-# In[6]:
-
-
-results_pca, pca_parameters = run_neighbor_classifier(3, train_data, test_data, train_labels, test_labels, run = "pca")
-
-
-# In[7]:
-
-
+from util import *
 import pickle
 
 
-# In[8]:
+# In[ ]:
 
 
-with open('data/mnist/results_pca_3_comp.pickle', 'wb') as handle:
-    pickle.dump(results_pca, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    
-with open('data/mnist/pca_parameters_3_comp.pickle', 'wb') as handle:
-    pickle.dump(pca_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
-
-
-# In[11]:
-
-
-results_lda, lda_parameters = run_neighbor_classifier(10, train_data, test_data, train_labels, test_labels, run = "lda")
-
-
-# In[12]:
-
-
-with open('data/mnist/results_lda_3_comp.pickle', 'wb') as handle:
-    pickle.dump(results_lda, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    
-with open('data/mnist/lda_parameters_3_comp.pickle', 'wb') as handle:
-    pickle.dump(lda_parameters, handle, protocol=pickle.HIGHEST_PROTOCOL)    
-
-
-# In[14]:
-
-
-# example pickle load
-
-with open('data/mnist/results_lda_3_comp.pickle', 'rb') as handle:
-    results_lda_10_comp_reloaded = pickle.load(handle)
-
-
-# In[18]:
-
-
-print("PCA Accuracy")
-print(results_pca)
-
-
-# In[17]:
-
-
-print("LDA accuracy")
-print(results_lda_10_comp_reloaded)
+run_algorithms_dataset('mnist', train_data, test_data, train_labels, test_labels)
 
 
 # In[ ]:
