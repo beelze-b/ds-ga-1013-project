@@ -269,6 +269,7 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10
 
     for label in set_labels:
         ind = labels == label
-        plt.scatter(reduced_test[ind, 0], reduced_data[ind, 0], label = label)
+        plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label)
+    plt.show()
         
     return
