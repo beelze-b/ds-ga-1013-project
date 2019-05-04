@@ -212,3 +212,63 @@ def run_algorithms_dataset(dataset_name,
                 pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)  
     return
 
+
+def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10, run = None):
+    if run == "pca":
+        pca_model = PCA(n_components=ncomponents)
+        train_x = pca_model.fit_transform(train_data)
+        test_x = pca_model.transform(test_data)
+    elif run == "lda":
+        lda_model = LinearDiscriminantAnalysis(n_components = ncomponents)
+        train_x = lda_model.fit_transform(train_data, train_labels)
+        test_x = lda_model.transform(test_data) 
+    elif run == "lfda":
+        lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
+        lfda_model.fit(train_data, train_labels)
+        train_x = lfda_model.transform(train_data)
+        test_x = lfda_model.transform(test_data)
+
+    elif run == "kpca":
+        pca_model = KernelPCA(n_components=ncomponents)
+        train_x = pca_model.fit_transform(train_data)
+        test_x = pca_model.transform(test_data)
+    elif run== "lmnn":
+        pca_model = PCA(n_components=ncomponents)
+        reduced_train = pca_model.fit_transform(train_data)
+        reduced_test = pca_model.transform(test_data)
+        lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
+        train_x = lmnn_model.transform(reduced_train)
+        test_x = lmnn_model.transform(reduced_test)
+    elif run == "nca":
+        nca_model = NCA(num_dims = ncomponents)
+        nca_model.fit_transform(train_data, train_labels)
+        train_x = nca_model.transform(train_data)
+        test_x = nca_model.transform(test_data)
+    elif run == "mmc":
+        pca_model = PCA(n_components=ncomponents)
+        reduced_train = pca_model.fit_transform(train_data)
+        reduced_test = pca_model.transform(test_data)
+        mmc_model =  MMC_Supervised(num_constraints=200).fit(reduced_train, train_labels)
+        train_x = mmc_model.transform(reduced_train)
+        test_x = mmc_model.transform(reduced_test)
+    elif run == "self":
+        if (train_data.shape[1] >= 800): 
+            pca_model = PCA(n_components=800)
+            train_data = pca_model.fit_transform(train_data)
+            test_data = pca_model.transform(test_data)
+        results = run_self(train_data, train_labels, ncomponents)
+        train_x = train_data.dot(results)
+        test_x = test_data.dot(results)
+    else:
+        train_x = train_data
+        test_x = test_data
+
+
+    set_labels = set(test_labels)
+
+
+    for label in set_labels:
+        ind = labels == label
+        plt.scatter(reduced_test[ind, 0], reduced_data[ind, 0], label = label)
+        
+    return
