@@ -103,10 +103,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     np.random.seed(seed)
     start_time = time.time()
     
-    ind, _, _, _ = train_test_split(np.arange(train_data.shape[0]), 
-                                    train_labels, 
-                                    test_size=train_data.shape[0]-100,
-                                    random_state=seed)    
     if run == "pca":
         pca_model = PCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
@@ -116,9 +112,8 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = lda_model.fit_transform(train_data, train_labels)
         test_x = lda_model.transform(test_data) 
     elif run == "lfda":
-
         lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
-        lfda_model.fit(train_data[ind, :], train_labels[ind])
+        lfda_model.fit(train_data, train_labels)
         train_x = lfda_model.transform(train_data)
         test_x = lfda_model.transform(test_data)
 
@@ -135,7 +130,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         test_x = lmnn_model.transform(reduced_test)
     elif run == "nca":
         nca_model = NCA(num_dims = ncomponents)
-        nca_model.fit_transform(train_data[ind, :], train_labels[ind])
+        nca_model.fit_transform(train_data, train_labels)
         train_x = nca_model.transform(train_data)
         test_x = nca_model.transform(test_data)
     elif run == "mmc":
@@ -150,7 +145,7 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
             pca_model = PCA(n_components=800)
             train_data = pca_model.fit_transform(train_data)
             test_data = pca_model.transform(test_data)
-        results = run_self(train_data[ind, :], train_labels[ind], ncomponents)
+        results = run_self(train_data, train_labels, ncomponents)
         train_x = train_data.dot(results)
         test_x = test_data.dot(results)
     else:
