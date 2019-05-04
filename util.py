@@ -193,7 +193,7 @@ def run_algorithms_dataset(dataset_name,
 
             for i in range(5):
                 train_size = np.min([train_data.shape[0], 800])
-                test_size = np.min([test_size.shape[0], 200])
+                test_size = np.min([test_data.shape[0], 200])
                 train_ind = np.random.choice(np.arange(train_data.shape[0]), size = train_size, replace = False)
                 test_ind = np.random.choice(np.arange(test_data.shape[0]), size = test_size, replace = False)
 
