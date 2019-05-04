@@ -116,13 +116,12 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         train_x = lda_model.fit_transform(train_data, train_labels)
         test_x = lda_model.transform(test_data) 
     elif run == "lfda":
-        try:
-            lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
-            lfda_model.fit(train_data[ind, :], train_labels[ind])
-            train_x = lfda_model.transform(train_data)
-            test_x = lfda_model.transform(test_data)
-        except ValueError as e:
-            return {'train_accuracy': -1, 'test_accuracy': -1, 'run_time': -1, 'n_comp': -1, 'n_neighbors': -1}
+
+        lfda_model = LFDA(num_dims = ncomponents, embedding_type='orthonormalized')
+        lfda_model.fit(train_data[ind, :], train_labels[ind])
+        train_x = lfda_model.transform(train_data)
+        test_x = lfda_model.transform(test_data)
+
     elif run == "kpca":
         pca_model = KernelPCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
@@ -167,7 +166,10 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
     
     param_grid = {"n_neighbors" : [1, 3, 5]}
     neighbor_grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv = 5, scoring=make_scorer(matthews_corrcoef))
-    neighbor_grid.fit(train_x, train_labels)
+    try:
+        neighbor_grid.fit(train_x, train_labels)
+    except ValueError as e:
+        return {'train_accuracy': -1, 'test_accuracy': -1, 'run_time': -1, 'n_comp': -1, 'n_neighbors': -1}
     
     model = neighbor_grid.best_estimator_
     parameters = neighbor_grid.best_params_
