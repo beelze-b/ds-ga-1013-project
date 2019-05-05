@@ -18,8 +18,6 @@ from sklearn.metrics import average_precision_score
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from metric_learn.lfda import LFDA
 from metric_learn.lmnn import LMNN
-from metric_learn.nca import NCA
-from metric_learn.mmc import MMC
 from metric_learn import MMC_Supervised
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -130,13 +128,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
-    elif run == "mmc":
-        pca_model = PCA(n_components=ncomponents)
-        reduced_train = pca_model.fit_transform(train_data)
-        reduced_test = pca_model.transform(test_data)
-        mmc_model =  MMC_Supervised(num_constraints=200).fit(reduced_train, train_labels)
-        train_x = mmc_model.transform(reduced_train)
-        test_x = mmc_model.transform(reduced_test)
     elif run == "self":
         if (train_data.shape[1] >= 800): 
             pca_model = PCA(n_components=800)
@@ -272,13 +263,6 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2,
         lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
-    elif run == "mmc":
-        pca_model = PCA(n_components=ncomponents)
-        reduced_train = pca_model.fit_transform(train_data)
-        reduced_test = pca_model.transform(test_data)
-        mmc_model =  MMC_Supervised(num_constraints=200).fit(reduced_train, train_labels)
-        train_x = mmc_model.transform(reduced_train)
-        test_x = mmc_model.transform(reduced_test)
     elif run == "self":
         if (train_data.shape[1] >= 800): 
             pca_model = PCA(n_components=800)
