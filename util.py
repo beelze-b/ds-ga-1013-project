@@ -43,9 +43,9 @@ def closest_k_neighbor(x, X, K = 7 ):
     return X[index_of_k_closest, :]
 
 def run_self(X, y, n_components, beta = 0.5):    
-    assert X.shape[0] >= 50
+    assert X.shape[0] >= 100
     mask = np.zeros(X.shape[0])
-    take_these_label_indices = np.random.choice(X.shape[0], size= 50, replace = False)
+    take_these_label_indices = np.random.choice(X.shape[0], size= 100, replace = False)
     mask[take_these_label_indices] = 1
     X_labeled = X[mask.astype(bool), :]
     y_labeled = y[mask.astype(bool)]
@@ -268,9 +268,8 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10
 
     set_labels = set(test_labels)
 
-
     for label in set_labels:
-        ind = labels == label
+        ind = test_labels == label
         plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label)
     plt.show()
         
