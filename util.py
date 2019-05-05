@@ -130,11 +130,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
-    elif run == "nca":
-        nca_model = NCA(num_dims = ncomponents, max_iter=100000)
-        nca_model.fit_transform(train_data, train_labels)
-        train_x = nca_model.transform(train_data)
-        test_x = nca_model.transform(test_data)
     elif run == "mmc":
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
@@ -277,11 +272,6 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2,
         lmnn_model = LMNN(k=1,use_pca=False).fit(reduced_train, train_labels)
         train_x = lmnn_model.transform(reduced_train)
         test_x = lmnn_model.transform(reduced_test)
-    elif run == "nca":
-        nca_model = NCA(num_dims = ncomponents, max_iter=100000)
-        nca_model.fit_transform(train_data, train_labels)
-        train_x = nca_model.transform(train_data)
-        test_x = nca_model.transform(test_data)
     elif run == "mmc":
         pca_model = PCA(n_components=ncomponents)
         reduced_train = pca_model.fit_transform(train_data)
