@@ -119,7 +119,6 @@ def run_neighbor_classifier(ncomponents, train_data, test_data, train_labels, te
         lfda_model.fit(train_data, train_labels)
         train_x = lfda_model.transform(train_data)
         test_x = lfda_model.transform(test_data)
-
     elif run == "kpca":
         pca_model = KernelPCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
@@ -271,10 +270,10 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10
 
 
     set_labels = set(test_labels)
-
+    plt.figure(figsize=(16,8))
     for label in set_labels:
         ind = test_labels == label
-        plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label)
+        plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label, s = 5)
     plt.show()
         
     return
