@@ -247,7 +247,7 @@ def is_outlier(points, thresh=3.5):
 
     return modified_z_score > thresh
 
-def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10, run = None):
+def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2, run = None):
     if len(np.unique(train_labels)) < 3 and run == 'lda':
         print("Warning: Can't graph lda for low number of classes")
         return
@@ -311,7 +311,8 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10
     for label in set_labels:
         ind = test_labels == label
         plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label, s = 10)
-    plt.legend()
+    if len(set_labels) <= 10:
+        plt.legend()
     plt.show()
         
     return
