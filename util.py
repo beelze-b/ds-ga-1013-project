@@ -233,7 +233,7 @@ def is_outlier(points, thresh=3.5):
 
     return modified_z_score > thresh
 
-def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2, run = None):
+def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2, dataset_name = 'mnist', run = None):
     if len(np.unique(train_labels)) < 3 and run == 'lda':
         print("Warning: Can't graph lda for low number of classes")
         return
@@ -279,6 +279,7 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2,
     
     set_labels = set(test_labels)
     plt.figure(figsize=(16,8))
+    plt.title("Two Dimensions Reduction for DataSet {0} With Technique {1}".format(dataset_name, run))
     outlier_mask = ~is_outlier(test_x)
     test_x = test_x[outlier_mask, ]
     test_labels = test_labels[outlier_mask, ]
@@ -287,6 +288,5 @@ def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 2,
         plt.scatter(test_x[ind, 0], test_x[ind, 1], label = label, s = 10)
     if len(set_labels) <= 10:
         plt.legend()
-    plt.show()
-        
+    plt.savefig('data/{0}/{1}_graph.png'.format(dataset_name, run))
     return
