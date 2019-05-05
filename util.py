@@ -216,6 +216,10 @@ def run_algorithms_dataset(dataset_name,
 
 
 def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10, run = None):
+    if len(np.unique(z)) < 3 and run == 'lda':
+        print("Warning: Can't graph lda for low number of classes")
+        return
+
     if run == "pca":
         pca_model = PCA(n_components=ncomponents)
         train_x = pca_model.fit_transform(train_data)
