@@ -216,7 +216,7 @@ def run_algorithms_dataset(dataset_name,
 
 
 def run_graph(train_data, train_labels, test_data, test_labels, ncomponents = 10, run = None):
-    if len(np.unique(z)) < 3 and run == 'lda':
+    if len(np.unique(train_labels)) < 3 and run == 'lda':
         print("Warning: Can't graph lda for low number of classes")
         return
 
